@@ -1,6 +1,8 @@
-from utatane import command
+from utatane import as_command
 
-with command() as plt:
+
+@as_command
+def main(plt):
     xs = list(range(10))
     ys = [x * x for x in xs]
     plt.plot(xs, xs, "g", label="x")

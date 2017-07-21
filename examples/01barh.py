@@ -1,8 +1,10 @@
 # https://matplotlib.org/examples/lines_bars_and_markers/barh_demo.html
 import numpy as np
-from utatane import command
+from utatane import as_command
 
-with command() as plt:
+
+@as_command
+def main(plt):
     plt.rcdefaults()
     fig, ax = plt.subplots()
 

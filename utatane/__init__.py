@@ -1,5 +1,6 @@
 import sys
 import contextlib
+from collections import ChainMap
 
 
 @contextlib.contextmanager
@@ -40,20 +41,62 @@ def dump(*, filename="fig.svg", width=None, height=None, format=None, **kwargs):
     plt.savefig(filename, dpi=dpi, format=format)
 
 
-def command(**kwargs):
+def get_parser():
     import argparse
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="action")
-    parser.set_defaults(action=show)
+    parser.set_defaults(action="show")
 
     dump_parser = subparsers.add_parser("dump")
     dump_parser.add_argument("filename")
     dump_parser.add_argument("--width", default=None)
     dump_parser.add_argument("--height", default=None)
-    dump_parser.set_defaults(action=dump)
 
-    show_parser = subparsers.add_parser("show")
-    show_parser.set_defaults(action=show)
+    show_parser = subparsers.add_parser("show")  # NOQA
+    return parser
 
-    args = parser.parse_args()
-    return args.action(**vars(args))
+
+class App:
+    scopes = {"show": show, "dump": dump}
+
+    def __init__(self, scopes=None):
+        self.fixtures = []
+        self.scopes = scopes or self.scopes
+
+    def yield_fixture(self, fixture):
+        self.fixtures.append(contextlib.contextmanager(fixture))
+
+    @contextlib.contextmanager
+    def activate_scope(self, ctx, fixtures):
+        if not fixtures:
+            yield ctx
+        else:
+            args = []
+            if need_context(fixtures[0]):
+                args.append(ctx)
+            with fixtures[0](*args) as kwargs:
+                if kwargs:
+                    ctx = ChainMap(kwargs, ctx)
+                with self.activate_scope(ctx, fixtures[1:]) as ctx:
+                    yield ctx
+
+    def run_with(self, fn, *, parser=None):
+        parser = parser or get_parser()
+        args = parser.parse_args()
+        with self.activate_scope({}, self.fixtures) as ctx:
+            with self.scopes[args.action](**vars(args)) as plt:
+                return fn(plt, **ctx)
+
+
+def with_context(fn):
+    fn._with_context = True
+    return fn
+
+
+def need_context(fn):
+    return hasattr(fn, "_with_context")
+
+
+app = App()
+yield_fixture = app.yield_fixture
+as_command = app.run_with

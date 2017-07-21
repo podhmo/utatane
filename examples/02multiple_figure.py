@@ -1,12 +1,13 @@
 import numpy as np
-from utatane import command
+from utatane import as_command
 
 
 def f(t):
     return np.exp(-t) * np.cos(2 * np.pi * t)
 
 
-with command() as plt:
+@as_command
+def main(plt):
     t1 = np.arange(0.0, 5.0, 0.1)
     t2 = np.arange(0.0, 5.0, 0.02)
 

@@ -1,6 +1,7 @@
 import sys
 import contextlib
 from collections import ChainMap
+from functools import partial
 
 
 @contextlib.contextmanager
@@ -86,6 +87,21 @@ class App:
         with self.activate_scope({}, self.fixtures) as ctx:
             with self.scopes[args.action](**vars(args)) as plt:
                 return fn(plt, **ctx)
+
+
+@contextlib.contextmanager
+def _with_subplot(plt, nrows, ncols, i, **kwargs):
+    yield plt.subplot(nrows, ncols, i, **kwargs)
+
+
+@contextlib.contextmanager
+def subplot(plt, nrows, ncols):
+    yield partial(_with_subplot, plt, nrows, ncols)
+
+
+@contextlib.contextmanager
+def window(plt, i):
+    yield plt.figure(i)
 
 
 @contextlib.contextmanager

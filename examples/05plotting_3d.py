@@ -12,4 +12,5 @@ def main(plt):
 
     with plot3d(plt) as ax:
         ax.plot(x, y, z, "b", label='parametric curve')
+        ax.grid(True)
         ax.legend()

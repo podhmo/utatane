@@ -1,5 +1,5 @@
 # from https://matplotlib.org/users/pyplot_tutorial.html
-from utatane import yield_fixture, as_command
+from utatane import yield_fixture, as_command, subplot
 import numpy as np
 from matplotlib.ticker import NullFormatter  # useful for `logit` scale
 
@@ -19,36 +19,34 @@ def fixture():
 
 @as_command
 def main(plt, *, x, y):
-    # plot with various axes scales
-    plt.figure(1)
+    with subplot(plt, nrows=2, ncols=2) as area:
+        # linear
+        with area(1) as ax:
+            plt.plot(x, y, "b")
+            ax.set_yscale('linear')
+            ax.set_title('linear')
+            ax.grid(True)
 
-    # linear
-    plt.subplot(221)
-    plt.plot(x, y, "b")
-    plt.yscale('linear')
-    plt.title('linear')
-    plt.grid(True)
+        # log
+        with area(2) as ax:
+            plt.plot(x, y, "b")
+            ax.set_yscale('log')
+            ax.set_title('log')
+            ax.grid(True)
 
-    # log
-    plt.subplot(222)
-    plt.plot(x, y, "b")
-    plt.yscale('log')
-    plt.title('log')
-    plt.grid(True)
+        # symmetric log
+        with area(3) as ax:
+            plt.plot(x, y - y.mean(), "b")
+            ax.set_yscale('symlog', linthreshy=0.01)
+            ax.set_title('symlog')
+            ax.grid(True)
 
-    # symmetric log
-    plt.subplot(223)
-    plt.plot(x, y - y.mean(), "b")
-    plt.yscale('symlog', linthreshy=0.01)
-    plt.title('symlog')
-    plt.grid(True)
-
-    # logit
-    plt.subplot(224)
-    plt.plot(x, y, "b")
-    plt.yscale('logit')
-    plt.title('logit')
-    plt.grid(True)
+        # logit
+        with area(4) as ax:
+            plt.plot(x, y, "b")
+            ax.set_yscale('logit')
+            ax.set_title('logit')
+            ax.grid(True)
 
     # Format the minor tick labels of the y-axis into empty strings with
     # `NullFormatter`, to avoid cumbering the axis with too many labels.

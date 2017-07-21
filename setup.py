@@ -14,6 +14,7 @@ except IOError:
     README = CHANGES = ''
 
 install_requires = [
+    "matplotlib",
 ]
 
 docs_extras = []

@@ -94,11 +94,16 @@ class App:
                     yield ctx
 
     def run_with(self, fn, *, parser=None):
+        with self.run(parser=parser) as (plt, ctx):
+            return fn(plt, **ctx)
+
+    @contextlib.contextmanager
+    def run(self, parser=None):
         parser = parser or get_parser()
         args = parser.parse_args()
         with self.scopes[args.action](**vars(args)) as plt:
             with self.activate_scope({}, self.fixtures) as ctx:
-                return fn(plt, **ctx)
+                yield plt, ctx
 
 
 @contextlib.contextmanager

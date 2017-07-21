@@ -1,12 +1,6 @@
-"""
-# show image
-$ python 00simple.py
-# dump image
-$ SAVE=00simple.svg python 00simple.py
-"""
-from utatane import draw
+from utatane import command
 
-with draw() as plt:
+with command() as plt:
     xs = list(range(10))
     ys = [x * x for x in xs]
     plt.plot(xs, xs, "g", label="x")

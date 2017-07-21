@@ -62,8 +62,8 @@ def get_parser():
 
     dump_parser = subparsers.add_parser("dump")
     dump_parser.add_argument("filename")
-    dump_parser.add_argument("--width", default=None)
-    dump_parser.add_argument("--height", default=None)
+    dump_parser.add_argument("--width", default=None, type=float)
+    dump_parser.add_argument("--height", default=None, type=float)
 
     show_parser = subparsers.add_parser("show")  # NOQA
     return parser

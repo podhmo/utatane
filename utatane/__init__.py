@@ -1,10 +1,9 @@
 import sys
-import os
 import contextlib
 
 
 @contextlib.contextmanager
-def show():
+def show(**kwargs):
     import matplotlib.pyplot as plt
     plt.style.use("ggplot")
     yield plt
@@ -13,23 +12,34 @@ def show():
 
 
 @contextlib.contextmanager
-def save(*, name="fig.svg", w=400, h=300):
+def dump(*, filename="fig.svg", width=None, height=None, **kwargs):
     import matplotlib
     matplotlib.use("AGG")  # NOQA
     import matplotlib.pyplot as plt  # NOQA
     plt.style.use("ggplot")
     yield plt
-    dpi = float(plt.gcf().get_dpi())
-    plt.gcf().set_size_inches(w / dpi, h / dpi)
-    print("save:", name, file=sys.stderr)
-    plt.savefig(name, dpi=dpi)
+    dpi = None
+    if width or height:
+        w = width or height
+        h = height or width
+        dpi = float(plt.gcf().get_dpi())
+        plt.gcf().set_size_inches(w / dpi, h / dpi)
+    print("save:", filename, file=sys.stderr)
+    plt.savefig(filename, dpi=dpi)
 
 
-def draw(*, name="SAVE", **kwargs):
-    filename = os.getenv(name)
-    if filename:
-        if "name" not in kwargs:
-            kwargs["name"] = filename
-        return save(**kwargs)
-    else:
-        return show()
+def command(**kwargs):
+    import argparse
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="action")
+    subparsers.required = True
+
+    dump_parser = subparsers.add_parser("dump")
+    dump_parser.add_argument("filename")
+    dump_parser.add_argument("--width", default=None)
+    dump_parser.add_argument("--height", default=None)
+
+    show_parser = subparsers.add_parser("show")  # NOQA
+
+    args = parser.parse_args()
+    return globals()[args.action](**vars(args))

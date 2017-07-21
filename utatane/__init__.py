@@ -34,6 +34,8 @@ def dump(*, filename="fig.svg", width=None, height=None, format=None, **kwargs):
         h = height or width
         dpi = float(plt.gcf().get_dpi())
         plt.gcf().set_size_inches(w / dpi, h / dpi)
+
+    # it is not supported yet, in multiple windows, saving multiple images
     print("save:", filename, file=sys.stderr)
     plt.savefig(filename, dpi=dpi, format=format)
 

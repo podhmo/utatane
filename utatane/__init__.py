@@ -96,8 +96,8 @@ class App:
     def run_with(self, fn, *, parser=None):
         parser = parser or get_parser()
         args = parser.parse_args()
-        with self.activate_scope({}, self.fixtures) as ctx:
-            with self.scopes[args.action](**vars(args)) as plt:
+        with self.scopes[args.action](**vars(args)) as plt:
+            with self.activate_scope({}, self.fixtures) as ctx:
                 return fn(plt, **ctx)
 
 

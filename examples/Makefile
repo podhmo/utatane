@@ -1,4 +1,4 @@
-default: 00simple.svg
-
-00simple.svg: 00simple.py
+%.svg: %.py
 	python $< dump $@
+
+default: $(shell ls *.py | sed 's@\.py$$@.svg@g;')

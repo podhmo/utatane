@@ -16,7 +16,7 @@ def show(**kwargs):
 
 
 @contextlib.contextmanager
-def dump(*, filename="fig.svg", width=None, height=None, **kwargs):
+def dump(*, filename="fig.svg", width=None, height=None, format=None, **kwargs):
     import matplotlib
     matplotlib.use("AGG")  # NOQA
     import matplotlib.pyplot as plt  # NOQA
@@ -35,7 +35,7 @@ def dump(*, filename="fig.svg", width=None, height=None, **kwargs):
         dpi = float(plt.gcf().get_dpi())
         plt.gcf().set_size_inches(w / dpi, h / dpi)
     print("save:", filename, file=sys.stderr)
-    plt.savefig(filename, dpi=dpi)
+    plt.savefig(filename, dpi=dpi, format=format)
 
 
 def command(**kwargs):

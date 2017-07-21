@@ -1,7 +1,12 @@
+import os.path
 import sys
+import weakref
 import contextlib
 from collections import ChainMap
 from functools import partial
+
+# xxx:
+_figure_pool = weakref.WeakKeyDictionary()
 
 
 @contextlib.contextmanager
@@ -37,9 +42,16 @@ def dump(*, filename="fig.svg", width=None, height=None, format=None, **kwargs):
         dpi = float(plt.gcf().get_dpi())
         plt.gcf().set_size_inches(w / dpi, h / dpi)
 
-    # it is not supported yet, in multiple windows, saving multiple images
-    print("save:", filename, file=sys.stderr)
-    plt.savefig(filename, dpi=dpi, format=format)
+    if plt not in _figure_pool:
+        plt.savefig(filename, dpi=dpi, format=format)
+        print("save:", filename, file=sys.stderr)
+    else:
+        basename, ext = os.path.splitext(filename)
+        for i, fig in enumerate(_figure_pool[plt]):
+            name = "{}{}{}".format(basename, i, ext)
+            fig.savefig(name, dpi=dpi, format=format)
+            print("save:", name, file=sys.stderr)
+            fig.canvas.draw_idle()  # need this if 'transparent=True' to reset colors
 
 
 def get_parser():
@@ -101,7 +113,11 @@ def subplot(plt, nrows, ncols):
 
 @contextlib.contextmanager
 def window(plt, i):
-    yield plt.figure(i)
+    if plt not in _figure_pool:
+        _figure_pool[plt] = []
+    fig = plt.figure(i)
+    _figure_pool[plt].append(fig)
+    yield fig
 
 
 @contextlib.contextmanager

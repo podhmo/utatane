@@ -6,8 +6,12 @@ import contextlib
 def show(**kwargs):
     import matplotlib.pyplot as plt
     plt.style.use("ggplot")
+
     yield plt
-    plt.legend()
+
+    # subplot's label is not supported, yet
+    if plt.gca().get_legend_handles_labels()[0]:
+        plt.legend()
     plt.show()
 
 
@@ -17,7 +21,13 @@ def dump(*, filename="fig.svg", width=None, height=None, **kwargs):
     matplotlib.use("AGG")  # NOQA
     import matplotlib.pyplot as plt  # NOQA
     plt.style.use("ggplot")
+
     yield plt
+
+    # subplot's label is not supported, yet
+    if plt.gca().get_legend_handles_labels()[0]:
+        plt.legend()
+
     dpi = None
     if width or height:
         w = width or height
@@ -32,7 +42,7 @@ def command(**kwargs):
     import argparse
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="action")
-    subparsers.required = True
+    parser.set_defaults(action="show")
 
     dump_parser = subparsers.add_parser("dump")
     dump_parser.add_argument("filename")

@@ -42,14 +42,16 @@ def command(**kwargs):
     import argparse
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="action")
-    parser.set_defaults(action="show")
+    parser.set_defaults(action=show)
 
     dump_parser = subparsers.add_parser("dump")
     dump_parser.add_argument("filename")
     dump_parser.add_argument("--width", default=None)
     dump_parser.add_argument("--height", default=None)
+    dump_parser.set_defaults(action=dump)
 
-    show_parser = subparsers.add_parser("show")  # NOQA
+    show_parser = subparsers.add_parser("show")
+    show_parser.set_defaults(action=show)
 
     args = parser.parse_args()
-    return globals()[args.action](**vars(args))
+    return args.action(**vars(args))

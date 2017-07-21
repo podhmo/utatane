@@ -19,30 +19,30 @@ def fixture():
 
 @as_command
 def main(plt, *, x, y):
-    with subplot(plt, nrows=2, ncols=2) as area:
+    with subplot(plt, nrows=2, ncols=2) as nth:
         # linear
-        with area(1) as ax:
+        with nth(1) as ax:
             plt.plot(x, y, "b")
             ax.set_yscale('linear')
             ax.set_title('linear')
             ax.grid(True)
 
         # log
-        with area(2) as ax:
+        with nth(2) as ax:
             plt.plot(x, y, "b")
             ax.set_yscale('log')
             ax.set_title('log')
             ax.grid(True)
 
         # symmetric log
-        with area(3) as ax:
+        with nth(3) as ax:
             plt.plot(x, y - y.mean(), "b")
             ax.set_yscale('symlog', linthreshy=0.01)
             ax.set_title('symlog')
             ax.grid(True)
 
         # logit
-        with area(4) as ax:
+        with nth(4) as ax:
             plt.plot(x, y, "b")
             ax.set_yscale('logit')
             ax.set_title('logit')

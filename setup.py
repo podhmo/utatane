@@ -35,7 +35,7 @@ setup(
     author="podhmo",
     author_email="",
     url="https://github.com/podhmo/utatane",
-    packages=find_packages(),
+    packages=find_packages(exclude=["utatane.tests"]),
     include_package_data=True,
     zip_safe=False,
     install_requires=install_requires,

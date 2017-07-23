@@ -8,9 +8,10 @@ _figure_pool = weakref.WeakKeyDictionary()
 
 
 @contextlib.contextmanager
-def show(**kwargs):
+def show(style="ggplot", **kwargs):
     import matplotlib.pyplot as plt
-    plt.style.use("ggplot")
+    if style:
+        plt.style.use(style)
 
     yield plt
 
@@ -21,11 +22,12 @@ def show(**kwargs):
 
 
 @contextlib.contextmanager
-def dump(*, filename="fig.svg", width=None, height=None, format=None, **kwargs):
+def dump(*, style="ggplot", filename="fig.svg", width=None, height=None, format=None, **kwargs):
     import matplotlib
     matplotlib.use("AGG")  # NOQA
     import matplotlib.pyplot as plt  # NOQA
-    plt.style.use("ggplot")
+    if style:
+        plt.style.use(style)
 
     yield plt
 

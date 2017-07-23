@@ -1,4 +1,5 @@
 import contextlib
+from functools import partial
 import yieldfixture
 from . import actions
 
@@ -27,13 +28,16 @@ class App:
         self._runner, self.yield_fixture = yieldfixture.create()
 
     @contextlib.contextmanager
-    def run_fixture(self, parser=None):
+    def run_fixture(self, parser=None, kwargs=None):
         parser = parser or get_parser()
         args = parser.parse_args()
-        with self.actions[args.action](**vars(args)) as plt:
+        with self.actions[args.action](**vars(args), **kwargs) as plt:
             with self._runner.run_fixture() as ctx:
                 yield plt, ctx
 
-    def run_with(self, fn, *, parser=None):
-        with self.run_fixture(parser=parser) as (plt, ctx):
-            return fn(plt, *ctx.args, **ctx.kwargs)
+    def run_with(self, fn=None, *, parser=None, **kwargs):
+        if fn is None:
+            return partial(self.run_with, parser=parser, **kwargs)
+        else:
+            with self.run_fixture(parser=parser, kwargs=kwargs) as (plt, ctx):
+                return fn(plt, *ctx.args, **ctx.kwargs)

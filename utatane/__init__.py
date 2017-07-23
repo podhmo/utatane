@@ -2,10 +2,11 @@ import os.path
 import sys
 import weakref
 import contextlib
-from collections import ChainMap
+import yieldfixture
 from functools import partial
 
 # xxx:
+with_context = yieldfixture.with_context
 _figure_pool = weakref.WeakKeyDictionary()
 
 
@@ -73,37 +74,21 @@ class App:
     scopes = {"show": show, "dump": dump}
 
     def __init__(self, scopes=None):
-        self.fixtures = []
         self.scopes = scopes or self.scopes
 
-    def yield_fixture(self, fixture):
-        self.fixtures.append(contextlib.contextmanager(fixture))
+        self._runner, self.yield_fixture = yieldfixture.create()
 
     @contextlib.contextmanager
-    def activate_scope(self, ctx, fixtures):
-        if not fixtures:
-            yield ctx
-        else:
-            args = []
-            if need_context(fixtures[0]):
-                args.append(ctx)
-            with fixtures[0](*args) as kwargs:
-                if kwargs:
-                    ctx = ChainMap(kwargs, ctx)
-                with self.activate_scope(ctx, fixtures[1:]) as ctx:
-                    yield ctx
-
-    def run_with(self, fn, *, parser=None):
-        with self.run(parser=parser) as (plt, ctx):
-            return fn(plt, **ctx)
-
-    @contextlib.contextmanager
-    def run(self, parser=None):
+    def run_fixture(self, parser=None):
         parser = parser or get_parser()
         args = parser.parse_args()
         with self.scopes[args.action](**vars(args)) as plt:
-            with self.activate_scope({}, self.fixtures) as ctx:
+            with self._runner.run_fixture() as ctx:
                 yield plt, ctx
+
+    def run_with(self, fn, *, parser=None):
+        with self.run_fixture(parser=parser) as (plt, ctx):
+            return fn(plt, *ctx.args, **ctx.kwargs)
 
 
 @contextlib.contextmanager
@@ -131,15 +116,6 @@ def plot3d(plt):
     fig = plt.figure()
     ax = Axes3D(fig)
     yield ax
-
-
-def with_context(fn):
-    fn._with_context = True
-    return fn
-
-
-def need_context(fn):
-    return hasattr(fn, "_with_context")
 
 
 app = App()

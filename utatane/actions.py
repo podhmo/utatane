@@ -8,7 +8,7 @@ _figure_pool = weakref.WeakKeyDictionary()
 
 
 @contextlib.contextmanager
-def show(style="ggplot", **kwargs):
+def show(style="ggplot", legend=True, **kwargs):
     import matplotlib.pyplot as plt
     if style:
         plt.style.use(style)
@@ -16,13 +16,13 @@ def show(style="ggplot", **kwargs):
     yield plt
 
     # subplot's label is not supported, yet
-    if plt.gca().get_legend_handles_labels()[0]:
+    if legend and plt.gca().get_legend_handles_labels()[0]:
         plt.legend()
     plt.show()
 
 
 @contextlib.contextmanager
-def dump(*, style="ggplot", filename="fig.svg", width=None, height=None, format=None, **kwargs):
+def dump(*, style="ggplot", legend=True, filename="fig.svg", width=None, height=None, format=None, **kwargs):
     import matplotlib
     matplotlib.use("AGG")  # NOQA
     import matplotlib.pyplot as plt  # NOQA
@@ -32,7 +32,7 @@ def dump(*, style="ggplot", filename="fig.svg", width=None, height=None, format=
     yield plt
 
     # subplot's label is not supported, yet
-    if plt.gca().get_legend_handles_labels()[0]:
+    if legend and plt.gca().get_legend_handles_labels()[0]:
         plt.legend()
 
     dpi = None

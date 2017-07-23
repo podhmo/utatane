@@ -14,11 +14,11 @@ def fixture():
     y = y[(y > 0) & (y < 1)]
     y.sort()
     x = np.arange(len(y))
-    yield {"x": x, "y": y}
+    yield x, y
 
 
 @as_command
-def main(plt, *, x, y):
+def main(plt, x, y):
     with subplot(plt, nrows=2, ncols=2) as nth:
         # linear
         with nth(1) as ax:

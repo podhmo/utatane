@@ -15,6 +15,7 @@ except IOError:
 
 install_requires = [
     "matplotlib",
+    "dictknife",
     "yieldfixture",
 ]
 

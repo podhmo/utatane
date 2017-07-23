@@ -1,5 +1,6 @@
 import contextlib
 from functools import partial
+from dictknife import loading
 import yieldfixture
 from . import actions
 
@@ -19,20 +20,53 @@ def get_parser():
     return parser
 
 
+class Dispatcher:
+    def __init__(self, fixtures):
+        self.fixtures = fixtures
+
+    def get_name(self, f):
+        return f.__name__
+
+    def dispatch_fixture(self, f, ctx, *, args):
+        name = self.get_name(f)
+        if getattr(args, name, None) is not None:
+            return load_from_filename(name, getattr(args, name))
+        return yieldfixture.dispatch_default(f, ctx)
+
+    def dispatch_commandline_arguments(self, parser):
+        parser = parser or get_parser()
+        for f in self.fixtures:
+            parser.add_argument("--{}".format(self.get_name(f), default=None))
+        return parser.parse_args()
+
+
+@contextlib.contextmanager
+def load_from_filename(name, filename):
+    yield {name: loading.loadfile(filename)}
+
+
 class App:
     actions = {"show": actions.show, "dump": actions.dump}
 
     def __init__(self, actions=None):
         self.actions = actions or self.actions
+        self.fixtures = []
 
-        self._runner, self.yield_fixture = yieldfixture.create()
+    def yield_fixture(self, fixture):
+        self.fixtures.append(fixture)
+        return fixture
 
     @contextlib.contextmanager
     def run_fixture(self, parser=None, kwargs=None):
-        parser = parser or get_parser()
-        args = parser.parse_args()
+        dispatcher = Dispatcher(self.fixtures)
+        args = dispatcher.dispatch_commandline_arguments(parser)
+        fixture_manager = yieldfixture.App(dispatcher=partial(dispatcher.dispatch_fixture, args=args))
+
+        for f in self.fixtures:
+            fixture_manager.yield_fixture(f)
+
         with self.actions[args.action](**vars(args), **kwargs) as plt:
-            with self._runner.run_fixture() as ctx:
+            with fixture_manager.run_fixture() as ctx:
                 yield plt, ctx
 
     def run_with(self, fn=None, *, parser=None, **kwargs):

@@ -1,6 +1,6 @@
 import contextlib
 from functools import partial
-from .actions import _figure_pool  # xxx
+from ..actions import _figure_pool  # xxx
 
 
 @contextlib.contextmanager
@@ -21,10 +21,3 @@ def window(plt, i):
     _figure_pool[plt].append(fig)
     yield fig
 
-
-@contextlib.contextmanager
-def plot3d(plt):
-    from mpl_toolkits.mplot3d import Axes3D
-    fig = plt.figure()
-    ax = Axes3D(fig)
-    yield ax

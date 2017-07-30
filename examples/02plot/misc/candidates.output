@@ -1,0 +1,155 @@
+hierarchy(mro)
+
+- Axes(0.125,0.1;0.775x0.8)
+- <class 'matplotlib.axes._subplots.AxesSubplot'>
+- <class 'matplotlib.axes._subplots.SubplotBase'>
+- <class 'matplotlib.axes._axes.Axes'>
+- <class 'matplotlib.axes._base._AxesBase'>
+- <class 'matplotlib.artist.Artist'>
+- <class 'object'>
+
+Axes(0.125,0.1;0.775x0.8)
+
+- stale_callback
+
+<class 'matplotlib.axes._subplots.AxesSubplot'>
+
+- acorr
+- angle_spectrum
+- annotate
+- apply_aspect
+- arrow
+- autoscale
+- autoscale_view
+- axhline
+- axhspan
+- axis
+- axvline
+- axvspan
+- bar
+- barbs
+- barh
+- boxplot
+- broken_barh
+- bxp
+- can_pan
+- can_zoom
+- cla
+- clabel
+- clear
+- cohere
+- contains
+- contains_point
+- contour
+- contourf
+- convert_xunits
+- convert_yunits
+- csd
+- drag_pan
+- draw
+- draw_artist
+- end_pan
+- errorbar
+- eventplot
+- fill
+- fill_between
+- fill_betweenx
+- findobj
+- format_coord
+- format_cursor_data
+- format_xdata
+- format_ydata
+- grid
+- has_data
+- have_units
+- hexbin
+- hist
+- hist2d
+- hitlist
+- hlines
+- hold
+- imshow
+- in_axes
+- invert_xaxis
+- invert_yaxis
+- is_figure_set
+- is_transform_set
+- ishold
+- legend
+- locator_params
+- loglog
+- magnitude_spectrum
+- margins
+- matshow
+- minorticks_off
+- minorticks_on
+- pchanged
+- pcolor
+- pcolorfast
+- pcolormesh
+- phase_spectrum
+- pick
+- pickable
+- pie
+- plot
+- plot_date
+- properties
+- psd
+- quiver
+- quiverkey
+- redraw_in_frame
+- relim
+- remove
+- remove_callback
+- reset_position
+- scatter
+- semilogx
+- semilogy
+- set
+- specgram
+- spy
+- stackplot
+- start_pan
+- stem
+- step
+- streamplot
+- table
+- text
+- tick_params
+- ticklabel_format
+- tricontour
+- tricontourf
+- tripcolor
+- triplot
+- twinx
+- twiny
+- update
+- violin
+- violinplot
+- vlines
+- xaxis_date
+- xaxis_inverted
+- xcorr
+- yaxis_date
+- yaxis_inverted
+
+<class 'matplotlib.axes._subplots.SubplotBase'>
+
+- change_geometry
+- is_first_col
+- is_first_row
+- is_last_col
+- is_last_row
+- label_outer
+
+<class 'matplotlib.axes._axes.Axes'>
+
+
+<class 'matplotlib.axes._base._AxesBase'>
+
+
+<class 'matplotlib.artist.Artist'>
+
+
+<class 'object'>
+

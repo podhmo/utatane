@@ -1,0 +1,13 @@
+{% for filename in files %}
+
+### {{filename}}
+
+code
+
+```python
+{{filename|read_from_file}}
+```
+
+![result]({{filename.replace(".py",".png")}})
+
+{% endfor %}

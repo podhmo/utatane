@@ -132,3 +132,25 @@ def render(plt):
 
 ![result](07plot_step.png)
 
+
+### 08plot_loglog.py
+
+code
+
+```python
+import numpy as np
+from utatane import as_command
+
+
+@as_command
+def render(plt):
+    xs = np.arange(20)
+    plt.loglog(xs, np.power(xs, xs), label="x^x")
+    plt.loglog(xs, np.power(np.pi, xs), label="e^x")
+    plt.loglog(xs, np.power(xs, 2), label="x^2")
+    plt.loglog(xs, xs, label="x")
+
+```
+
+![result](08plot_loglog.png)
+

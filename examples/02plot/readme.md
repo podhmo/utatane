@@ -154,3 +154,49 @@ def render(plt):
 
 ![result](08plot_loglog.png)
 
+
+### 09plot_bar.py
+
+code
+
+```python
+import numpy as np
+from utatane import as_command
+
+
+@as_command
+def render(plt):
+    xs = np.arange(10)
+    ys = np.array(xs, copy=True)
+    ys.fill(5)
+
+    plt.bar(xs, xs, label="xs", color="r", alpha=0.3)
+    plt.bar(xs, ys, label="ys", color="b", alpha=0.3)
+
+```
+
+![result](09plot_bar.png)
+
+
+### 10plot_barh.py
+
+code
+
+```python
+import numpy as np
+from utatane import as_command
+
+
+@as_command
+def render(plt):
+    xs = np.arange(10)
+    ys = np.array(xs, copy=True)
+    ys.fill(5)
+
+    plt.barh(xs, xs, label="xs", color="r", alpha=0.3)
+    plt.barh(xs, ys, label="ys", color="b", alpha=0.3)
+
+```
+
+![result](10plot_barh.png)
+

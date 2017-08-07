@@ -60,13 +60,19 @@ class App:
     def run_fixture(self, parser=None, kwargs=None):
         dispatcher = Dispatcher(self.fixtures)
         args = dispatcher.dispatch_commandline_arguments(parser)
-        fixture_manager = yieldfixture.App(dispatcher=partial(dispatcher.dispatch_fixture, args=args))
+        fixture_manager = yieldfixture.App(
+            dispatcher=partial(dispatcher.dispatch_fixture, args=args)
+        )
 
         for f in self.fixtures:
             fixture_manager.yield_fixture(f)
 
         with self.actions[args.action](**vars(args), **kwargs) as plt:
-            with fixture_manager.run_fixture() as ctx:
+            ctx = yieldfixture.Context()
+            if parser is not None:
+                ctx.args.append(args)
+
+            with fixture_manager.run_fixture(context=ctx) as ctx:
                 yield plt, ctx
 
     def run_with(self, fn=None, *, parser=None, **kwargs):

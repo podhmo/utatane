@@ -4,7 +4,7 @@ from utatane.decoration import (  # NOQA
     window,
     plot3d,
 )
-from utatane.app import App
+from utatane.app import App, get_parser  # NOQA
 
 app = App()
 
